@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    // ...
+    "lib": ["es6"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+    // ...
+  }
+}
