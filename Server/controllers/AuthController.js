@@ -63,6 +63,7 @@ const signIn = async (req, res) => {
 
 export const getUserInfo = async (req, res) => {
   try {
+    console.log("geting user profile");
     const userId = req.userId;
 
     const user = await User.findById(userId);
@@ -71,7 +72,7 @@ export const getUserInfo = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ message: "User not found i am in the get userdata" });
     }
-    console.log("User found:", user);
+
     res
       .status(StatusCodes.OK)
       .json({ message: "User found sucessfully", user });
@@ -81,8 +82,9 @@ export const getUserInfo = async (req, res) => {
 };
 
 export const updateProfile = async (req, res) => {
-  const userId = req.userId;
   try {
+    console.log("geting update user ");
+    const userId = req.userId;
     const user = await User.findById(userId);
     console.log(req.body);
     if (!user) {
@@ -108,7 +110,6 @@ export const updateProfile = async (req, res) => {
     res
       .status(StatusCodes.OK)
       .json({ message: "Everything is fine", updatedUser: updateduser });
-    console.log("updateduser", updateduser);
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

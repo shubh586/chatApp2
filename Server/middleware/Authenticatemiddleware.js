@@ -2,10 +2,10 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 import { StatusCodes } from "http-status-codes";
-export const varifyToken = async (request, res, next) => {
+export const varifyToken = async (req, res, next) => {
   try {
-    console.log("loginig the cookies", request.cookies);
-    const token = request.cookies.AuthToken;
+    console.log("loginig the cookies", req.cookies);
+    const token = req.cookies.AuthToken;
     console.log({ token });
     if (!token) {
       return res
@@ -13,8 +13,8 @@ export const varifyToken = async (request, res, next) => {
         .json({ message: " bkl tu authenticated hai" });
     }
     const decoded = jwt.verify(token, process.env.JWT_KEY);
-    console.log("decoded part", decoded);
-    request.userId = decoded.userId;
+    req.userId = decoded.userId;
+    next();
   } catch (error) {
     console.error(error.message);
   }
