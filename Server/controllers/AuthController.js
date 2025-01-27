@@ -1,8 +1,11 @@
 import User from "../models/UserModel.js";
 import { StatusCodes } from "http-status-codes";
+import dotenv from "dotenv";
+dotenv.config();
+
 const signUp = async (req, res) => {
   try {
-    console.log(req.body);
+    console.log("in the signup", req.body);
     const { email, password } = req.body;
     if (!email || !password) {
       return res
@@ -19,10 +22,11 @@ const signUp = async (req, res) => {
       .json({ message: "here is the error", error });
   }
 };
+
 const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
+    console.log("in the signin ", req.body);
     if (!email || !password) {
       return res
         .status(StatusCodes.BAD_REQUEST)
@@ -43,9 +47,9 @@ const signIn = async (req, res) => {
     const Authtoken = user.createJWT();
     res.cookie("AuthToken", Authtoken, {
       httpOnly: true,
-      sercure: true,
+      sercure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 1000,
-      sameSite: "None",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
     res
       .status(StatusCodes.OK)
@@ -54,6 +58,61 @@ const signIn = async (req, res) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "error login main hai", error });
+  }
+};
+
+export const getUserInfo = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "User not found i am in the get userdata" });
+    }
+    console.log("User found:", user);
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "User found sucessfully", user });
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const user = await User.findById(userId);
+    console.log(req.body);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "User not found." });
+    }
+
+    const upDateduser = {
+      userName: req.body.userName ? req.body.userName : user.userName,
+      lastName: req.body.lastName ? req.body.lastName : user.lastName,
+      color: req.body.color ? req.body.color : user.color,
+      profileSetup: req.body.profileSetup
+        ? req.body.profileSetup
+        : user.profileSetup,
+      image: req.body.image ? req.body.image : user.image,
+    };
+    const updateduser = await User.findByIdAndUpdate(userId, upDateduser, {
+      new: true,
+      runValidators: true,
+    });
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Everything is fine", updatedUser: updateduser });
+    console.log("updateduser", updateduser);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "An error occurred while updating the profile." });
   }
 };
 

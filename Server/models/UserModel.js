@@ -1,7 +1,8 @@
 import mongoose, { model } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import dotenv from "dotenv";
+dotenv.config();
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -41,6 +42,7 @@ const userSchema = new mongoose.Schema({
   },
   createdAt: { type: Date, default: Date.now },
 });
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
@@ -48,15 +50,17 @@ userSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
+
 userSchema.methods.createJWT = function () {
   return jwt.sign(
-    { userName: this.name, userId: this._id },
+    { userId: this._id, email: this.email },
     process.env.JWT_KEY,
     {
       expiresIn: "1h",
     }
   );
 };
+
 userSchema.methods.comparePassword = async function (userpassword) {
   try {
     return await bcrypt.compare(userpassword, this.password);

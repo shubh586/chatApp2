@@ -1,15 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js";
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 5000;
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(
   cors({
     origin: [process.env.ORIGIN],
@@ -17,6 +14,9 @@ app.use(
     credentials: true,
   })
 );
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const port = process.env.PORT || 5000;
 app.use("/api/auth", AuthRoutes);
 
 mongoose
