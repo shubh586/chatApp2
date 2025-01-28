@@ -2,6 +2,8 @@ import User from "../models/UserModel.js";
 import { StatusCodes } from "http-status-codes";
 import dotenv from "dotenv";
 dotenv.config();
+import fs, { renameSync } from "fs";
+import path from "path";
 
 const signUp = async (req, res) => {
   try {
@@ -136,6 +138,56 @@ export const updateProfile = async (req, res) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "An error occurred while updating the profile." });
+  }
+};
+export const addProfileImage = async (req, res) => {
+  try {
+    console.log("i am here?");
+    if (!req.file) {
+      return res.status(400).json({ message: "file is required" });
+    }
+    const file = req.file;
+    const uploaddir = path.join("uploads/profile");
+    const fileName = Date.now() + file.originalname;
+    const unique = path.join(uploaddir, fileName);
+    const filePathForDB = unique.replace(/\\+/g, "/");
+
+    console.log("printing the file path", unique);
+
+    renameSync(file.path, filePathForDB);
+    const userId = req.userId;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { image: filePathForDB },
+      { new: true, runValidators: true }
+    );
+    console.log(user);
+    res.status(StatusCodes.OK).json({ image: user.image });
+  } catch (error) {
+    console.log("pakda gaya bkl!!", error);
+    res.status(500).json({ error, message: "Error in image uploading" });
+  }
+};
+export const deleteProfileImage = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user || !user.image) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Image not found" });
+    }
+    const imagepath = user.image;
+    if (imagepath) {
+      fs.unlinkSync(imagepath);
+    }
+
+    user.image = null;
+    user.save();
+    res.status(StatusCodes.OK).json({ message: "image  is removed" });
+  } catch (error) {
+    console.log("Error while removing image:", error);
+    res.status(500).json({ error, message: "Error in removing image" });
   }
 };
 

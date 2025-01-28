@@ -8,9 +8,14 @@ import { getColor } from "@/lib/utils";
 import { colors } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { apiClient } from "@/lib/api-client";
-import { UPDATE_USER_ROUTE } from "@/utils/constant";
+import {
+  ADD_PROFILE_IMAGE_ROUTE,
+  UPDATE_USER_ROUTE,
+  DELETE_PROFILE_IMAGE_ROUTE,
+} from "@/utils/constant";
 import { toast } from "sonner";
-
+import { useRef } from "react";
+import { useEffect } from "react";
 const Profile = () => {
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useAppStore();
@@ -19,6 +24,15 @@ const Profile = () => {
   const [image, setImage] = useState(null);
   const [hovered, setHovered] = useState(false);
   const [selectColor, setSelectColor] = useState(userInfo.color);
+
+  useEffect(() => {
+    if (userInfo.profileSetup) setFirstName(userInfo.firstName);
+    setLastName(userInfo.lastName);
+    setSelectColor(userInfo.image);
+    if (userInfo.image) {
+      setImage(userInfo.image);
+    }
+  }, [userInfo]);
 
   const saveChanges = async (e) => {
     try {
@@ -45,6 +59,45 @@ const Profile = () => {
       toast.error("Please set the profile first");
     }
   };
+  const deleteImage = async () => {
+    try {
+      const response = await apiClient.delete(DELETE_PROFILE_IMAGE_ROUTE, {
+        withCredentials: true,
+      });
+      setImage(null); // Reset image in state
+      setUserInfo({ ...userInfo, image: null }); // Update global store
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete the image.");
+    }
+  };
+
+  const handleChangeImage = async (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("profile-image", file);
+      try {
+        const response = await apiClient.patch(
+          ADD_PROFILE_IMAGE_ROUTE,
+          formData,
+          { withCredentials: true }
+        );
+        console.log(response.data);
+        setUserInfo({ ...userInfo, image: response.data.image });
+        setImage(response.data.image);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const handleFileInput = () => {
+    fileInputRef.current.click();
+  };
+
+  const fileInputRef = useRef(null);
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 bg-[#1b1c24] h-[100vh]">
@@ -82,7 +135,10 @@ const Profile = () => {
               )}
             </Avatar>
             {hovered && (
-              <div className="absolute inset-0 flex justify-center items-center bg-black/50 rounded-full ring-fuchsia-50">
+              <div
+                className="absolute inset-0 flex justify-center items-center bg-black/50 rounded-full ring-fuchsia-50"
+                onClick={image ? deleteImage : handleFileInput}
+              >
                 {image ? (
                   <FaTrash className="text-3xl text-white cursor-pointer" />
                 ) : (
@@ -90,6 +146,16 @@ const Profile = () => {
                 )}
               </div>
             )}
+            <form action="post" encType="multipart/form-data">
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleChangeImage}
+                name="profile-image"
+                accept=".png,.jpeg,.svg,.webp"
+              />
+            </form>
           </div>
           <div className="flex flex-col justify-center items-center gap-10 min-w-32 md:min-w-64 text-white">
             <div className="w-full">

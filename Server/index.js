@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js";
+import path from "path";
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 dotenv.config();
 const app = express();
 app.use(cookieParser());
@@ -16,6 +18,10 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  "/uploads/profile",
+  express.static(path.join(__dirname, "uploads/profile"))
+);
 const port = process.env.PORT || 5000;
 app.use("/api/auth", AuthRoutes);
 
