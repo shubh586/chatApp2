@@ -9,6 +9,7 @@ import { colors } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { apiClient } from "@/lib/api-client";
 import { UPDATE_USER_ROUTE } from "@/utils/constant";
+import { toast } from "sonner";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -17,28 +18,41 @@ const Profile = () => {
   const [lastName, setLastName] = useState("");
   const [image, setImage] = useState(null);
   const [hovered, setHovered] = useState(false);
-  const [selectColor, setSelectColor] = useState(0);
+  const [selectColor, setSelectColor] = useState(userInfo.color);
 
-  const saveChanges = async () => {
+  const saveChanges = async (e) => {
     try {
+      e.preventDefault();
       const response = await apiClient.patch(UPDATE_USER_ROUTE, {
-        userName: firstName,
-        lastName: lastName,
-        image: image,
-        color: selectColor,
-        profileSetup: true,
+        userName: firstName || userInfo.userName,
+        lastName: lastName || userInfo.lastName,
+        image: image || userInfo.image,
+        color: selectColor || userInfo.color,
       });
-      console.log("updated data", response.data);
+      const user = response.data.user;
+      console.log("updated data", response.data.user);
+      setUserInfo(user);
+      toast.success("Profile updates sucessfully");
       navigate("/chat");
     } catch (error) {
       console(error);
+    }
+  };
+  const handlenavigate = () => {
+    if (userInfo.profileSetup) {
+      navigate("/chat");
+    } else {
+      toast.error("Please set the profile first");
     }
   };
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 bg-[#1b1c24] h-[100vh]">
       <div className="flex flex-col gap-10 w-[80vh] md:w-max">
-        <IoArrowBack className="text-4xl text-white/90 lg:text-6xl cursor-pointer" />
+        <IoArrowBack
+          className="text-4xl text-white/90 lg:text-6xl cursor-pointer"
+          onClick={handlenavigate}
+        />
         <div className="grid grid-cols-2">
           <div
             className="relative flex justify-center items-center w-32 md:w-48 h-full md:h-48"

@@ -10,11 +10,18 @@ import { useEffect, useState } from "react";
 const Authenticated = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? <Navigate to="/chat" /> : children;
+  return isAuthenticated ? (
+    userInfo.profileSetup ? (
+      <Navigate to="/chat" />
+    ) : (
+      <Navigate to="/profile" />
+    )
+  ) : (
+    children
+  );
 };
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
-  console.log(userInfo, "in the profile");
   const isAuthenticated = !!userInfo;
   return isAuthenticated ? children : <Navigate to="/auth" />;
 };
@@ -29,7 +36,7 @@ const App = () => {
         const response = await apiClient.get(GET_USER_INFO, {
           withCredentials: true,
         });
-        console.log(response.data.user);
+        console.log("printing the respose data ", response.data.user);
 
         setUserInfo(response.data.user);
       } catch (error) {
@@ -44,7 +51,7 @@ const App = () => {
     } else {
       setLoading(false);
     }
-  }, [userInfo]);
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -61,7 +68,7 @@ const App = () => {
             </Authenticated>
           }
         />
-        <Route path="*" element={<Navigate to="/auth" />} />
+
         <Route
           path="/profile"
           element={
@@ -78,6 +85,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        <Route path="*" element={<Navigate to="/auth" />} />
       </Routes>
     </BrowserRouter>
   );

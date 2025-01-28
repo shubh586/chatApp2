@@ -53,12 +53,14 @@ const Auth = () => {
           { withCredentials: true }
         );
 
-        console.log(response.data);
+        console.log("in the login", response.data.user);
         toast.success("User logged in successfully");
         setUserInfo(response.data.user);
-        if (response.data.user.profileSetup === true) {
+        if (response.data.user.profileSetup) {
+          console.log("runnig chat in login");
           navigate("/chat");
         } else {
+          console.log("runnig profile  in login");
           navigate("/profile");
         }
       } catch (error) {
@@ -82,17 +84,14 @@ const Auth = () => {
         });
         console.log(response);
         toast.success("success", "User created successfully");
-        if (response.status === 201) {
-          setUserInfo(response.data.user);
-          navigate("/profile");
-        }
+        navigate("/auth");
       } catch (error) {
-        console.error(
+        console.log(
           error.message
             ? error.message
             : console.log("Error has ocurred at the signup page")
         );
-        toast.error("failure", "User created successfully");
+        toast.error("User creation failed");
       }
     }
     return false;

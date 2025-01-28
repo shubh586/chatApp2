@@ -26,7 +26,6 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log("in the signin ", req.body);
     if (!email || !password) {
       return res
         .status(StatusCodes.BAD_REQUEST)
@@ -45,6 +44,7 @@ const signIn = async (req, res) => {
         .json({ message: "Invalid credentials" });
     }
     const Authtoken = user.createJWT();
+
     res.cookie("AuthToken", Authtoken, {
       httpOnly: true,
       sercure: process.env.NODE_ENV === "production",
@@ -63,9 +63,7 @@ const signIn = async (req, res) => {
 
 export const getUserInfo = async (req, res) => {
   try {
-    console.log("geting user profile");
     const userId = req.userId;
-
     const user = await User.findById(userId);
     if (!user) {
       return res
@@ -73,9 +71,17 @@ export const getUserInfo = async (req, res) => {
         .json({ message: "User not found i am in the get userdata" });
     }
 
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "User found sucessfully", user });
+    res.status(StatusCodes.OK).json({
+      message: "User found sucessfully",
+      user: {
+        userName: user.userName,
+        lastName: user.lastName,
+        email: user.email,
+        image: user.image,
+        color: user.color,
+        profileSetup: user.profileSetup,
+      },
+    });
   } catch (error) {
     console.error(error.message);
   }
@@ -85,8 +91,16 @@ export const updateProfile = async (req, res) => {
   try {
     console.log("geting update user ");
     const userId = req.userId;
+    const { userName, lastName } = req.body;
+    if (!userName || !lastName) {
+      return res
+        .status(404)
+        .json({ message: "firstname and the lstname is required" });
+    }
     const user = await User.findById(userId);
+
     console.log(req.body);
+
     if (!user) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -97,19 +111,27 @@ export const updateProfile = async (req, res) => {
       userName: req.body.userName ? req.body.userName : user.userName,
       lastName: req.body.lastName ? req.body.lastName : user.lastName,
       color: req.body.color ? req.body.color : user.color,
-      profileSetup: req.body.profileSetup
-        ? req.body.profileSetup
-        : user.profileSetup,
       image: req.body.image ? req.body.image : user.image,
+      profileSetup: true,
     };
-    const updateduser = await User.findByIdAndUpdate(userId, upDateduser, {
+    const updatedUser = await User.findByIdAndUpdate(userId, upDateduser, {
       new: true,
       runValidators: true,
     });
 
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "Everything is fine", updatedUser: updateduser });
+    {
+      res.status(StatusCodes.OK).json({
+        message: "Everything is fine",
+        user: {
+          userName: updatedUser.userName,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+          image: updatedUser.image,
+          color: updatedUser.color,
+          profileSetup: true,
+        },
+      });
+    }
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

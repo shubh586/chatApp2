@@ -4,9 +4,7 @@ dotenv.config();
 import { StatusCodes } from "http-status-codes";
 export const varifyToken = async (req, res, next) => {
   try {
-    console.log("loginig the cookies", req.cookies);
     const token = req.cookies.AuthToken;
-    console.log({ token });
     if (!token) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
