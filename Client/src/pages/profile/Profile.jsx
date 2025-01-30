@@ -8,10 +8,12 @@ import { getColor } from "@/lib/utils";
 import { colors } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { apiClient } from "@/lib/api-client";
+
 import {
   ADD_PROFILE_IMAGE_ROUTE,
   UPDATE_USER_ROUTE,
   DELETE_PROFILE_IMAGE_ROUTE,
+  HOST,
 } from "@/utils/constant";
 import { toast } from "sonner";
 import { useRef } from "react";
@@ -49,7 +51,7 @@ const Profile = () => {
       toast.success("Profile updates sucessfully");
       navigate("/chat");
     } catch (error) {
-      console(error);
+      console.log(error);
     }
   };
   const handlenavigate = () => {
@@ -119,7 +121,7 @@ const Profile = () => {
             <Avatar className="rounded-full w-32 md:w-48 h-32 md:h-48 overflow-hidden">
               {image ? (
                 <AvatarImage
-                  src={image}
+                  src={`${HOST}/${userInfo.image}`}
                   className="bg-black w-full h-full object-cover"
                 />
               ) : (
