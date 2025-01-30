@@ -140,20 +140,17 @@ export const updateProfile = async (req, res) => {
       .json({ message: "An error occurred while updating the profile." });
   }
 };
+
 export const addProfileImage = async (req, res) => {
   try {
-    console.log("i am here?");
     if (!req.file) {
       return res.status(400).json({ message: "file is required" });
     }
     const file = req.file;
-    const uploaddir = path.join("uploads/profile");
+    const uploaddir = path.join("uploads");
     const fileName = Date.now() + file.originalname;
     const unique = path.join(uploaddir, fileName);
     const filePathForDB = unique.replace(/\\+/g, "/");
-
-    console.log("printing the file path", unique);
-
     renameSync(file.path, filePathForDB);
     const userId = req.userId;
     const user = await User.findByIdAndUpdate(
@@ -161,13 +158,13 @@ export const addProfileImage = async (req, res) => {
       { image: filePathForDB },
       { new: true, runValidators: true }
     );
-    console.log(user);
     res.status(StatusCodes.OK).json({ image: user.image });
   } catch (error) {
     console.log("pakda gaya bkl!!", error);
     res.status(500).json({ error, message: "Error in image uploading" });
   }
 };
+
 export const deleteProfileImage = async (req, res) => {
   try {
     const userId = req.userId;

@@ -1,7 +1,7 @@
 import express from "express";
 
 import multer from "multer";
-const uploads = multer({ dest: "uploads/profile" });
+const uploads = multer({ dest: "uploads" });
 
 const router = express.Router();
 

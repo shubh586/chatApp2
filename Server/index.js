@@ -18,10 +18,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  "/uploads/profile",
-  express.static(path.join(__dirname, "uploads/profile"))
-);
+app.use("/uploads", express.static("uploads"));
 const port = process.env.PORT || 5000;
 app.use("/api/auth", AuthRoutes);
 
