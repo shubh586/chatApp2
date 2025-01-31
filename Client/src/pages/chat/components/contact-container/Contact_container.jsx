@@ -1,18 +1,23 @@
+import ProfileInfo from "./components/profile-info/ProfileInfo";
+
 const Contact_container = () => {
   return (
     <div className="relative border-[#2f303b] bg-[#1b1c24] border-r-2 md:w-[35vw] lg:w-[30vw] xl:w-[20vw] active">
       <div className="pt-3">
         <Logo />
       </div>
-      <div className="my-5">
-        <div className="flex justify-center items-center pr-10">
+      <div className="my-4">
+        <div className="flex justify-start items-center pr-10">
           <Title text="Direct Mesages" />
         </div>
       </div>
-      <div className="my-5">
-        <div className="flex justify-center items-center pr-10">
+      <div className="my-4">
+        <div className="flex justify-start items-center pr-10">
           <Title text="Channels" />
         </div>
+      </div>
+      <div>
+        <ProfileInfo />
       </div>
     </div>
   );

@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   color: {
     type: Number,
+    default: 0,
     required: false,
   },
   profileSetup: {
