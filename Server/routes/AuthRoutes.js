@@ -10,6 +10,7 @@ import auth, {
   updateProfile,
   addProfileImage,
   deleteProfileImage,
+  logOutUser,
 } from "../controllers/AuthController.js";
 import { varifyToken } from "../middleware/Authenticatemiddleware.js";
 const { signUp, signIn } = auth;
@@ -24,4 +25,5 @@ router.patch(
   addProfileImage
 );
 router.delete("/delete-profile-image", varifyToken, deleteProfileImage);
+router.post("/log-out", varifyToken, logOutUser);
 export default router;

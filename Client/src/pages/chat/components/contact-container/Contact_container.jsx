@@ -1,3 +1,6 @@
+/* eslint react/prop-types: 0 */
+
+import NewDm from "./components/newdm/NewDm";
 import ProfileInfo from "./components/profile-info/ProfileInfo";
 
 const Contact_container = () => {
@@ -7,8 +10,9 @@ const Contact_container = () => {
         <Logo />
       </div>
       <div className="my-4">
-        <div className="flex justify-start items-center pr-10">
+        <div className="flex justify-between items-center pr-10">
           <Title text="Direct Mesages" />
+          <NewDm />
         </div>
       </div>
       <div className="my-4">

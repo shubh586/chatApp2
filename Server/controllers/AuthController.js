@@ -49,13 +49,21 @@ const signIn = async (req, res) => {
 
     res.cookie("AuthToken", Authtoken, {
       httpOnly: true,
-      sercure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 1000,
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "user login sucesssfully", user });
+    res.status(StatusCodes.OK).json({
+      message: "user login sucesssfully",
+      user: {
+        userName: user.userName,
+        lastName: user.lastName,
+        email: user.email,
+        image: user.image,
+        color: user.color,
+        profileSetup: user.profileSetup,
+      },
+    });
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -185,6 +193,22 @@ export const deleteProfileImage = async (req, res) => {
   } catch (error) {
     console.log("Error while removing image:", error);
     res.status(500).json({ error, message: "Error in removing image" });
+  }
+};
+
+export const logOutUser = async (req, res) => {
+  try {
+    console.log("i am in logout");
+    res.clearCookie("AuthToken", {
+      secure: process.env.NODE_ENV == "production",
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      path: "/",
+    });
+    return res.status(200).json({ message: "jashn manao aap logout ho gaye" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({ message: "bkl tere se logout nahi ho raha" });
   }
 };
 

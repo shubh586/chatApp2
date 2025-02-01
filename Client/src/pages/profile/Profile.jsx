@@ -30,7 +30,7 @@ const Profile = () => {
   useEffect(() => {
     if (userInfo.profileSetup) setFirstName(userInfo.firstName);
     setLastName(userInfo.lastName);
-    setSelectColor(userInfo.image);
+    setSelectColor(userInfo.color);
     if (userInfo.image) {
       setImage(userInfo.image);
     }

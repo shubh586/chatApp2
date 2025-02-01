@@ -2,27 +2,45 @@ import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { useState } from "react";
 import { useAppStore } from "@/store";
 import { useEffect } from "react";
-import { HOST } from "@/utils/constant.js";
+import { HOST, LOGOUT_USER } from "@/utils/constant.js";
 import { FiEdit2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { IoPowerSharp } from "react-icons/io5";
+import { getColor } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { apiClient } from "@/lib/api-client";
+import { toast } from "sonner";
 
 const ProfileInfo = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
-  const { userInfo } = useAppStore();
+  const { userInfo, setUserInfo } = useAppStore();
   useEffect(() => {
     if (userInfo.image) {
       setImage(userInfo.image);
     }
   }, [userInfo]);
-  const LogOut = async () => {};
+  const LogOut = async () => {
+    try {
+      const response = await apiClient.post(LOGOUT_USER, {
+        withCredentials: true,
+      });
+
+      response.data.message
+        ? console.log(response.data.message)
+        : console.log(response.data);
+      setUserInfo(null);
+      navigate("/auth");
+      toast.success("user logout sucessfully");
+    } catch (error) {
+      error.message ? console.log(error.message) : console.log(error);
+    }
+  };
   return (
     <div className="bottom-0 absolute flex justify-between items-center bg-[#2a2b33] px-10 w-full">
       <div className="flex justify-center items-center gap-3">
@@ -35,7 +53,9 @@ const ProfileInfo = () => {
               />
             ) : (
               <AvatarFallback
-                className={`flex justify-center items-center border-[1px] rounded-full w-12 h-12  text-lg uppercase ${userInfo.color}`}
+                className={`flex justify-center items-center border-[1px] rounded-full w-12 h-12  text-lg uppercase ${getColor(
+                  userInfo.color
+                )}`}
               >
                 {userInfo.firstName
                   ? userInfo.firstName.split("").shift()
@@ -70,7 +90,7 @@ const ProfileInfo = () => {
           <Tooltip>
             <TooltipTrigger>
               <IoPowerSharp
-                className="font-medium text-purple-500 text-xl"
+                className="font-medium text-red-500 text-xl"
                 onClick={() => {
                   LogOut();
                 }}
