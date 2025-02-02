@@ -5,7 +5,7 @@ import ProfileInfo from "./components/profile-info/ProfileInfo";
 
 const Contact_container = () => {
   return (
-    <div className="relative border-[#2f303b] bg-[#1b1c24] border-r-2 md:w-[35vw] lg:w-[30vw] xl:w-[20vw] active">
+    <div className="relative border-[#2f303b] bg-[#1b1c24] border-r-2 w-full md:w-[35vw] lg:w-[30vw] xl:w-[20vw] active">
       <div className="pt-3">
         <Logo />
       </div>
