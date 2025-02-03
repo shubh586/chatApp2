@@ -30,10 +30,12 @@ mongoose
   .then(() => {
     console.log("Connected to MongoDB");
   })
+  .then(() => {
+    const server = app.listen(port, () => {
+      console.log("Server is running on port", port);
+    });
+    setupSocket(server);
+  })
   .catch((err) => {
     console.log(err);
   });
-server = app.listen(port, () => {
-  console.log("Server is running on port", port);
-});
-setupSocket(server);

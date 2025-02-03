@@ -21,7 +21,7 @@ export const searchContacts = async (request, response, next) => {
         { $or: [{ firstName: regex }, { lastName: regex }, { email: regex }] },
       ],
     });
-    console.log(contacts);
+    // console.log(contacts);
     return response.status(StatusCodes.OK).json({ contact: contacts || [] });
   } catch (error) {
     console.log(error);

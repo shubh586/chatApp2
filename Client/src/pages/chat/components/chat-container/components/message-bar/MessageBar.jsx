@@ -1,15 +1,31 @@
+import { SocketContext } from "@/context/socketcontextprovider/SocketContextProvider";
+import { useAppStore } from "@/store";
 import EmojiPicker from "emoji-picker-react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { GrAttachment } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
 import { RiEmojiStickerLine } from "react-icons/ri";
 
 const MessageBar = () => {
+  const { socket } = useContext(SocketContext);
   const emojiRef = useRef();
   const [emojiPicker, setEmojiPicker] = useState(false);
   const [message, setMessage] = useState("");
-
-  const handleSendMessages = async () => {};
+  const { userInfo, selectChatType, selectChatData } = useAppStore();
+  const handleSendMessages = async () => {
+    if (selectChatType === "contact") {
+      socket.emit("sendmessage", {
+        sender: userInfo.id,
+        content: message,
+        recipient: selectChatData._id,
+        messageType: "text",
+        fileUrl: undefined,
+      });
+      console.log("printing the chatdata: ", selectChatData);
+    } else {
+      console.log("selected chat type is not contact");
+    }
+  };
 
   const handleAddEmoji = (emoji) => {
     setMessage((msg) => msg + emoji.emoji);

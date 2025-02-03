@@ -56,6 +56,7 @@ const signIn = async (req, res) => {
     res.status(StatusCodes.OK).json({
       message: "user login sucesssfully",
       user: {
+        id: user._id,
         userName: user.userName,
         lastName: user.lastName,
         email: user.email,
@@ -84,6 +85,7 @@ export const getUserInfo = async (req, res) => {
     res.status(StatusCodes.OK).json({
       message: "User found sucessfully",
       user: {
+        id: user._id,
         userName: user.userName,
         lastName: user.lastName,
         email: user.email,
@@ -133,6 +135,7 @@ export const updateProfile = async (req, res) => {
       res.status(StatusCodes.OK).json({
         message: "Everything is fine",
         user: {
+          id: upDateduser._id,
           userName: updatedUser.userName,
           lastName: updatedUser.lastName,
           email: updatedUser.email,
