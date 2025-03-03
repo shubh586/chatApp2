@@ -1,9 +1,11 @@
 import { useRef, useEffect } from "react";
 import { useAppStore } from "@/store";
 import moment from "moment";
+import { GET_MESSAGES } from "@/utils/constant.js";
+import { apiClient } from "@/lib/api-client.js";
 const MessageComponents = () => {
   const scrollRef = useRef();
-  const { selectChatType, selectChatData, userInfo, selectChatMessages } =
+  const { selectChatType, selectChatData, userInfo, selectChatMessages,setSelectChatMessages } =
     useAppStore();
 
   useEffect(() => {
@@ -11,6 +13,30 @@ const MessageComponents = () => {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectChatMessages]);
+
+
+  useEffect(() => {
+
+    const getMessages = async () => {
+      console.log('in the getmessages');
+      try {
+        const response = await apiClient.post(
+          GET_MESSAGES,
+          { id: selectChatData._id },
+          { withCredentials: true }
+        );
+        console.log(response.data.messages, "response in getting messages");
+        setSelectChatMessages(response.data.messages); 
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+  
+    if (selectChatData._id) {
+      if (selectChatType === "contact") getMessages();
+    }
+  }, [selectChatType, selectChatData,userInfo]);
+  
 
   const renderMessages = () => {
     let lastDate = null;
@@ -48,7 +74,8 @@ const MessageComponents = () => {
               message.sender !== selectChatData._id
                 ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
                 : "bg-[#2a2b33]/5 text-white/90 border-[#ffffff]/20"
-            } border inline-block p-4 rounded-lg my-1 max-w-[50% break-words]`}
+            } border inline-block p-4 rounded-lg my-1 max-w-[50%]  break-words
+`}
           >
             {message.content}
           </div>

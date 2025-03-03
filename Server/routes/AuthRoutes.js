@@ -21,7 +21,7 @@ router.patch("/update-user", varifyToken, updateProfile);
 router.patch(
   "/add-profile-image",
   varifyToken,
-  uploads.single("profile-image"),
+  uploads.single("image"),
   addProfileImage
 );
 router.delete("/delete-profile-image", varifyToken, deleteProfileImage);
