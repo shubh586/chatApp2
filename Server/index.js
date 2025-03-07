@@ -9,6 +9,7 @@ import contackRouter from "./routes/ContactRouter.js";
 import messageRouter from "./routes/MessageRoutes.js";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 import setupSocket from "./socket.js";
+import ChannelRouter from "./routes/ChannelRoutes.js";
 dotenv.config();
 const app = express();
 app.use(cookieParser());
@@ -27,6 +28,7 @@ const port = process.env.PORT || 5000;
 app.use("/api/auth", AuthRoutes);
 app.use("/api/search", contackRouter);
 app.use("/api/message", messageRouter);
+app.use('/api/channel', ChannelRouter);
 
 mongoose
   .connect(process.env.MONGO_URI)

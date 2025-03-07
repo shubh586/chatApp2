@@ -8,12 +8,18 @@ import { IoSend } from "react-icons/io5";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import { SEND_FILES } from "@/utils/constant.js";
 const MessageBar = () => {
-  const handleAttachmentRef=useRef();
+  const handleAttachmentRef = useRef();
   const { socket } = useContext(SocketContext);
   const emojiRef = useRef();
   const [emojiPicker, setEmojiPicker] = useState(false);
   const [message, setMessage] = useState("");
-  const { userInfo, selectChatType, selectChatData,setIsUploading,setFileUploadProgress } = useAppStore();
+  const {
+    userInfo,
+    selectChatType,
+    selectChatData,
+    setIsUploading,
+    setFileUploadProgress,
+  } = useAppStore();
   const handleSendMessages = async () => {
     if (selectChatType === "contact") {
       socket.emit("sendmessage", {
@@ -24,9 +30,16 @@ const MessageBar = () => {
         fileUrl: undefined,
       });
       console.log("printing the chatdata: ", selectChatData);
-    } else {
-      console.log("selected chat type is not contact");
+    } else if (selectChatType === "channel") {
+      socket.emit("send-channel-message", {
+        sender: userInfo.id,
+        content: message,
+        channelId: selectChatData._id,
+        messageType: "text",
+        fileUrl: undefined,
+      });
     }
+    setMessage(" ");
   };
 
   const handleAddEmoji = (emoji) => {
@@ -45,42 +58,49 @@ const MessageBar = () => {
     };
   }, []);
 
-  const handleAttachmentClick=()=>{
-    if(handleAttachmentRef.current){
+  const handleAttachmentClick = () => {
+    if (handleAttachmentRef.current) {
       handleAttachmentRef.current.click();
-  }
-}
-const handleAttachmentChange=async(event)=>{
- const file=event.target.files[0];
- if(file){
-  try {
-    const formData=new FormData();
-    formData.append("file",file);
-    setIsUploading(true);
-    const response= await apiClient.post(SEND_FILES,formData,
-      {withCredentials:true,
-      onUploadProgress:(e)=>{ 
-        const progress=Math.round((e.loaded*100)/e.total);
-        setFileUploadProgress(progress);    
-      }
-
-    });
-    setIsUploading(false);
-    if(selectChatType === "contact"){
-      socket.emit("sendmessage", {
-        sender: userInfo.id,
-        content: undefined,
-        recipient: selectChatData._id,
-        messageType: "file",
-        fileUrl: response.data.filePath,
-      });
     }
-  } catch (error) {
-    setIsUploading(false);
-    console.log(error);
-  }
- }
-}
+  };
+  const handleAttachmentChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        setIsUploading(true);
+        const response = await apiClient.post(SEND_FILES, formData, {
+          withCredentials: true,
+          onUploadProgress: (e) => {
+            const progress = Math.round((e.loaded * 100) / e.total);
+            setFileUploadProgress(progress);
+          },
+        });
+        setIsUploading(false);
+        if (selectChatType === "contact") {
+          socket.emit("send-channel-message", {
+            sender: userInfo.id,
+            content: undefined,
+            recipient: selectChatData._id,
+            messageType: "file",
+            fileUrl: response.data.filePath,
+          });
+        } else if (selectChatType === "channel") {
+          socket.emit("send-channel-message", {
+            sender: userInfo.id,
+            content: undefined,
+            channelId: selectChatData._id,
+            messageType: "file",
+            fileUrl: response.data.filePath,
+          });
+        }
+      } catch (error) {
+        setIsUploading(false);
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <div className="flex justify-center items-center bg-[#1c1d25] px-8 h-[10vh]">
@@ -92,14 +112,21 @@ const handleAttachmentChange=async(event)=>{
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button className="text-neutral-500 hover:text-white transition-all"
-        onClick={handleAttachmentClick}>
+        <button
+          className="text-neutral-500 hover:text-white transition-all"
+          onClick={handleAttachmentClick}
+        >
           <GrAttachment className="text-2xl" />
         </button>
         <form action="post" encType="multipart/form-data">
-        <input type="file" ref={handleAttachmentRef} className="hidden" onChange={handleAttachmentChange} />
+          <input
+            type="file"
+            ref={handleAttachmentRef}
+            className="hidden"
+            onChange={handleAttachmentChange}
+          />
         </form>
-       
+
         <div className="relative">
           <button
             className="text-neutral-500 hover:text-white transition-all"

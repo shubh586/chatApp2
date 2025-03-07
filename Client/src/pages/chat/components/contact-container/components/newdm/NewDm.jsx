@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { apiClient } from "@/lib/api-client";
 import { useAppStore } from "@/store";
-const NewDm = () => {
+const NewDm = ({doRefresh}) => {
   const { setSelectChatType, setSelectChatData } = useAppStore();
   const [openNewContactModal, setOpenNewContactModal] = useState(false);
   const [searchAllContacts, setSearchAllContacts] = useState([]);
@@ -44,8 +44,10 @@ const NewDm = () => {
     setSelectChatType("contact");
     setSelectChatData(contact);
     setSearchAllContacts([]);
+    doRefresh();
   };
 
+  
   return (
     <div>
       <TooltipProvider>

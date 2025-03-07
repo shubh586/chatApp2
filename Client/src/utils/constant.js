@@ -10,9 +10,14 @@ export const ADD_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/add-profile-image`;
 export const DELETE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/delete-profile-image`;
 export const LOGOUT_USER = `${AUTH_ROUTES}/log-out`;
 export const SEARCH_CONTACTS = `${SEARCH_ROUTES}/search-contacts`;
+export const GET_ALL_CONTACTS = `${SEARCH_ROUTES}/get-all-contacts`;
 export const GET_CONTACTS = `${SEARCH_ROUTES}/get-contacts`;
 
 
 
 export const GET_MESSAGES= `${MESSAGE_ROUTES}/get-messages`;
 export const SEND_FILES= `${MESSAGE_ROUTES}/send-files`;
+
+export const CHANNEL_ROUTES = "/api/channel";
+export const CREATE_CHANNELS = `${CHANNEL_ROUTES}/create-channel`;
+export const GET_USER_CHANNELS = `${CHANNEL_ROUTES}/get-user-channels`;

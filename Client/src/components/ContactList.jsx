@@ -23,7 +23,7 @@ const handleClick=(contact)=>{
 
   return (
     <div className="mt-5">
-      {contacts.map((contact, index) => (
+      {contacts && contacts.map((contact, index) => (
         <div
           key={index}
           className={`pl-10 py-2 transition-all duration-300 cursor-pointer ${
@@ -57,7 +57,7 @@ const handleClick=(contact)=>{
           </Avatar>
           }
           {
-            isChannel && <div className="bg-[#ffffff22] h-10,w-10 rounded-full items-center justify-center ">#</div>
+            isChannel && <div className="bg-[#ffffff22] h-10 w-10 rounded-full flex items-center justify-center ">#</div>
           }
           {
             isChannel?<span>{contact.name}</span>:<span>{`${contact.userName} ${contact.lastName}`}</span>

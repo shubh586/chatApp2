@@ -71,4 +71,5 @@ userSchema.methods.comparePassword = async function (userpassword) {
     throw new Error("Password comparison failed");
   }
 };
-export default mongoose.model("User", userSchema);
+const User=mongoose.model("User", userSchema);
+export default User;

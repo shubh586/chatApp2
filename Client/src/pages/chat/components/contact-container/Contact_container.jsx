@@ -1,14 +1,17 @@
 /* eslint react/prop-types: 0 */
-import {GET_CONTACTS} from "@/utils/constant.js";
-import { useEffect } from "react";
+import {GET_CONTACTS,GET_USER_CHANNELS} from "@/utils/constant.js";
+import { useEffect, useState } from "react";
 import NewDm from "./components/newdm/NewDm";
 import ProfileInfo from "./components/profile-info/ProfileInfo";
 import { useAppStore } from "@/store";
 import ContactList from "@/components/ContactList";
 import { apiClient } from "@/lib/api-client";
+import CreateChannel from "./components/create-channel/CreateChannel";
+
 
 const Contact_container = () => {
-const {setDirectMessagesContacts,directMessagesContacts}=useAppStore();
+const {setDirectMessagesContacts,directMessagesContacts,channel,setChannel}=useAppStore();
+const [refresh,setRefresh]=useState(false);
 
 useEffect(() => { 
 
@@ -23,9 +26,20 @@ useEffect(() => {
       console.error("Error fetching contacts:", error);
     }
   };
+  const getChannels=async()=>{
+    console.log("fetching channels");
+    try {
+      const response = await apiClient.get(GET_USER_CHANNELS, { withCredentials: true });
+      if(response.data.channels){
+        setChannel(response.data.channels);
+      }
+    } catch (error) {
+      console.error("Error fetching channels:", error);
+    }
+  };
+  getChannels();
   getContcts();
-},[])
-
+},[refresh]);
   return (
     <div className="relative border-[#2f303b] bg-[#1b1c24] border-r-2 w-full md:w-[35vw] lg:w-[30vw] xl:w-[20vw] active">
       <div className="pt-3">
@@ -34,15 +48,19 @@ useEffect(() => {
       <div className="my-4">
         <div className="flex justify-between items-center pr-10">
           <Title text="Direct Mesages" />
-          <NewDm />
+          <NewDm  doRefresh={()=>setRefresh((prev)=>!prev)}/>
         </div>
         <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
           <ContactList contacts={directMessagesContacts} />
         </div>
       </div>
       <div className="my-4">
-        <div className="flex justify-start items-center pr-10">
+        <div className="flex justify-between items-center pr-10">
           <Title text="Channels" />
+          <CreateChannel doRefresh={()=>setRefresh((prev)=>!prev)}/>
+        </div>
+        <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
+         <ContactList contacts={channel} isChannel={true} />
         </div>
       </div>
       <div>

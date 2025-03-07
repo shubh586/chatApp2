@@ -10,26 +10,33 @@ const ChatHeader = () => {
       <div className="flex justify-between items-center gap-5 w-full">
         <div className="flex justify-center items-center gap-3">
           <div className="relative w-12 h-12">
-            <Avatar className="rounded-full w-12 h-12 overflow-hidden">
-              {selectChatData.image ? (
-                <AvatarImage
-                  src={`${HOST}/${selectChatData.image}`}
-                  className="bg-black rounded-full w-12 h-12 object-cover"
-                />
-              ) : (
-                <AvatarFallback
-                  className={`flex justify-center items-center border-[1px] rounded-full w-12 h-12  text-lg uppercase ${getColor(
-                    selectChatData.color
-                  )}`}
-                >
-                  {selectChatData.userName
-                    ? selectChatData.userName.split("").shift()
-                    : selectChatData.email.split("").shift()}
-                </AvatarFallback>
-              )}
-            </Avatar>
+            {selectChatType === "contact" ? (
+              <Avatar className="rounded-full w-12 h-12 overflow-hidden">
+                {selectChatData.image ? (
+                  <AvatarImage
+                    src={`${HOST}/${selectChatData.image}`}
+                    className="bg-black rounded-full w-12 h-12 object-cover"
+                  />
+                ) : (
+                  <AvatarFallback
+                    className={`flex justify-center items-center border-[1px] rounded-full w-12 h-12  text-lg uppercase ${getColor(
+                      selectChatData.color
+                    )}`}
+                  >
+                    {selectChatData.userName
+                      ? selectChatData.userName.split("").shift()
+                      : selectChatData.email.split("").shift()}
+                  </AvatarFallback>
+                )}
+              </Avatar>
+            ) : (
+              <div className="bg-[#ffffff22] h-10 w-10 rounded-full flex items-center justify-center ">
+                #
+              </div>
+            )}
           </div>
           <div>
+            {selectChatType === "channel" && selectChatData.name}
             {selectChatType === "contact" && selectChatData.userName
               ? `${selectChatData.userName} ${selectChatData.lastName}`
               : selectChatData.email}
