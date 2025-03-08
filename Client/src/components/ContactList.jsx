@@ -60,7 +60,7 @@ const handleClick=(contact)=>{
             isChannel && <div className="bg-[#ffffff22] h-10 w-10 rounded-full flex items-center justify-center ">#</div>
           }
           {
-            isChannel?<span>{contact.name}</span>:<span>{`${contact.userName} ${contact.lastName}`}</span>
+            isChannel?<span>{contact.name}</span>:<span>{  contact.userName? `${contact.userName} ${contact.lastName}`:`${contact.email}`}</span>
           }
           </div>
         </div>

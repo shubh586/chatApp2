@@ -16,7 +16,7 @@ const SocketContextProvider = ({ children }) => {
       });
 
       const handleRecieveMessage = (message) => {
-        const { selectChatData, selectChatType, addMessage } =
+        const { selectChatData, selectChatType, addMessage,addContactsInDMContacts } =
           useAppStore.getState();
 
         if (
@@ -29,12 +29,32 @@ const SocketContextProvider = ({ children }) => {
             addMessage(message);
           }
         }
+        addContactsInDMContacts(message)
       };
 
+      const handleReceivedChannelMessage = (message) => {
+        const { selectChatData, selectChatType, addMessage,addChannelInChannelList } =
+          useAppStore.getState();
+        if (
+          selectChatType !== undefined &&
+          selectChatData._id === message.channelId
+        ) {
+          console.log("channel message received", message);
+          addMessage(message);
+        }
+        addChannelInChannelList(message);
+      };
+
+
+      socket.current.on("receivedmessage", handleRecieveMessage);
+      socket.current.on(
+        "recieve-channel-message",
+        handleReceivedChannelMessage
+      );
       socket.current.on("connect", () => {
         console.log("Clinet is connected");
       });
-      socket.current.on("receivedmessage", handleRecieveMessage);
+      
       return () => {
         socket.current.disconnect();
       };

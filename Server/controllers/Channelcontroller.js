@@ -16,6 +16,35 @@ export const getUserChannels=async(request ,response)=>{
         response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message:"Internal server error"});
     }
 }
+
+export const getChannelMessages=async(request,response)=>{
+    try {
+        const {channelId}=request.params;
+        if(!channelId){
+           return response.status(StatusCodes.BAD_REQUEST).json('channelid is not definied');
+        }
+        const channel =await Channel.findById(channelId).populate({path:"messages",populate:{
+            path:"sender",
+            select:"userName lastName email _id image color"
+        }});
+        if(!channel){
+            return response.status(StatusCodes.NOT_FOUND).json({message:"Channel Not found"})
+        }
+        const messages=channel.messages;
+        return response.status(StatusCodes.OK).json({messages})
+
+    } catch (error) {
+        console.log(error)
+        response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message:'error in the getchannel messages'})
+    }
+}
+
+
+
+
+
+
+
 export const createChannel=async(request,response,next)=>{
 
     try{
