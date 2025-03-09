@@ -1,27 +1,88 @@
 import User from "../models/UserModel.js";
 import { StatusCodes } from "http-status-codes";
 import dotenv from "dotenv";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 dotenv.config();
 import fs, { renameSync } from "fs";
 import path from "path";
+import nodemailer from 'nodemailer';
+import { response } from "express";
+
+
+const transporter=nodemailer.createTransport({
+  service:'gmail',
+  auth:{
+    user:process.env.EMAIL_USER,
+    pass:process.env.EMAIL_PASS
+  }
+})
+
+export const varify=async(req,res)=>{
+
+  try {
+    const {token}=req.params;
+    if(!token){
+      return response.status(StatusCodes.BAD_REQUEST).json('token is undefinied');
+    }
+    const decode=jwt.verify(token, process.env.JWT_KEY);
+    const {email,password}=decode;
+    const user=await User.findOne({email});
+    if (user) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "User already exists" });
+    }
+    const NewUser = await User.create({ email, password ,isVerified:true});
+    const Authtoken = NewUser.createJWT();
+    res.cookie("AuthToken", Authtoken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 1000,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    });
+    
+    return res.redirect(`${process.env.ORIGIN}/verify-success?status=success`);
+  } catch (error) {
+    return res.redirect(`${process.env.ORIGIN}/verify-error?status=failed`);
+  }
+}
+
 
 const signUp = async (req, res) => {
   try {
-    console.log("in the signup", req.body);
     const { email, password } = req.body;
     if (!email || !password) {
       return res
         .status(400)
         .json({ message: "Please provide email and password" });
     }
-    const user = await User.create({ email, password });
-    res
-      .status(StatusCodes.CREATED)
-      .json({ message: "User created sucessfully", user });
+    if(!email.endsWith('@gmail.com')){
+      return response.status(StatusCodes.BAD_REQUEST).json('only gmail accounts are required');
+    }
+    const existing=await User.findOne({email})
+    if(existing){
+      return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Email is already in use" });
+    }
+   
+    const token = await jwt.sign({email,password},process.env.JWT_KEY,{expiresIn:'1h'})
+    const verificationLink = `http://localhost:4589/api/auth/verify/${token}`;
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Verify Your Email',
+      html: `<p>Click <a href="${verificationLink}">here</a> to verify your email.</p>`,
+    });
+
+    return res.status(StatusCodes.CREATED).json({
+      message: "Signup successful! Please check your email to verify your account.",
+    });
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "here is the error", error });
+      .json({ message: "here is the error in signup", error });
   }
 };
 
@@ -63,6 +124,7 @@ const signIn = async (req, res) => {
         image: user.image,
         color: user.color,
         profileSetup: user.profileSetup,
+        isVerified:user.isVerified
       },
     });
   } catch (error) {
@@ -92,6 +154,7 @@ export const getUserInfo = async (req, res) => {
         image: user.image,
         color: user.color,
         profileSetup: user.profileSetup,
+        isVerified:user.isVerified
       },
     });
   } catch (error) {
@@ -101,7 +164,7 @@ export const getUserInfo = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    console.log("geting update user ");
+ 
     const userId = req.userId;
     const { userName, lastName } = req.body;
     if (!userName || !lastName) {
@@ -110,9 +173,6 @@ export const updateProfile = async (req, res) => {
         .json({ message: "firstname and the lstname is required" });
     }
     const user = await User.findById(userId);
-
-    console.log(req.body);
-
     if (!user) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -125,6 +185,7 @@ export const updateProfile = async (req, res) => {
       color: req.body.color ? req.body.color : user.color,
       image: req.body.image ? req.body.image : user.image,
       profileSetup: true,
+      isVerified:user.isVerified
     };
     const updatedUser = await User.findByIdAndUpdate(userId, upDateduser, {
       new: true,
@@ -142,6 +203,7 @@ export const updateProfile = async (req, res) => {
           image: updatedUser.image,
           color: updatedUser.color,
           profileSetup: true,
+          isVerified:updatedUser.isVerified
         },
       });
     }
@@ -171,7 +233,7 @@ export const addProfileImage = async (req, res) => {
     );
     res.status(StatusCodes.OK).json({ image: user.image });
   } catch (error) {
-    console.log("pakda gaya bkl!!", error);
+    console.log("pakda gaya in addProfileImage", error);
     res.status(500).json({ error, message: "Error in image uploading" });
   }
 };
@@ -211,7 +273,7 @@ export const logOutUser = async (req, res) => {
     return res.status(200).json({ message: "jashn manao aap logout ho gaye" });
   } catch (error) {
     console.error("Logout error:", error);
-    return res.status(500).json({ message: "bkl tere se logout nahi ho raha" });
+    return res.status(500).json({ message: "tere se logout nahi ho raha" });
   }
 };
 

@@ -7,23 +7,33 @@ import { useAppStore } from "./store";
 import { apiClient } from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constant.js";
 import { useEffect, useState } from "react";
+
+import Verified from "./pages/auth/Verified";
+import FailedVerified from "./pages/auth/FailedVeified";
 const Authenticated = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? (
-    userInfo.profileSetup ? (
-      <Navigate to="/chat" />
-    ) : (
-      <Navigate to="/profile" />
-    )
-  ) : (
-    children
-  );
+  if (isAuthenticated) {
+    if(userInfo.isVerified){
+      return userInfo.profileSetup ? (
+        <Navigate to="/chat" replace />
+      ) : (
+        <Navigate to="/profile" replace />
+      );
+    }
+  }
+  return children;
 };
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? children : <Navigate to="/auth" />;
+
+  if (isAuthenticated) {
+    if(userInfo.isVerified){
+      return children
+    }
+  }
+  return <Navigate to="/auth" replace />;
 };
 
 const App = () => {
@@ -68,7 +78,9 @@ const App = () => {
             </Authenticated>
           }
         />
-
+          <Route path="/verify-success" element={<Verified/>} />
+          <Route path="/verify-error" element={<FailedVerified/>} />
+    
         <Route
           path="/profile"
           element={

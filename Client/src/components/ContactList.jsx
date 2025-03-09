@@ -9,6 +9,7 @@ import { HOST } from "@/utils/constant.js";
 
 const ContactList = ({ contacts,isChannel=false }) => {
 const {selectChatData,setSelectChatData,selectChatType,setSelectChatType,setSelectChatMessages}=useAppStore();
+
 const handleClick=(contact)=>{
   if(isChannel){
     setSelectChatType("channel");

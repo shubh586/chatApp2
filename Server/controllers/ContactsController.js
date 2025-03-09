@@ -41,8 +41,8 @@ export const getContacts = async (request, response, next) => {
       {
         $match: {
           $or: [
-            { sender: new mongoose.Types.ObjectId(user1) },
-            { recipient: new mongoose.Types.ObjectId(user1) },
+            { sender: new mongoose.Schema.Types.ObjectId(user1) },
+            { recipient: new mongoose.Schema.Types.ObjectId(user1) },
           ],
         },
       },
@@ -53,7 +53,7 @@ export const getContacts = async (request, response, next) => {
         $group: {
           _id: {
             $cond: {
-              if: { $eq: ["$sender", new mongoose.Types.ObjectId(user1)] },
+              if: { $eq: ["$sender", new mongoose.Schema.Types.ObjectId(user1)] },
               then: "$recipient",
               else: "$sender",
             },

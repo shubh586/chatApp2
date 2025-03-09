@@ -8,10 +8,11 @@ export const varifyToken = async (req, res, next) => {
     if (!token) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: " bkl tu authenticated hai" });
+        .json({ message: " tu authenticated hai" });
     }
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     req.userId = decoded.userId;
+    
     next();
   } catch (error) {
     console.error(error.message);

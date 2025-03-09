@@ -10,7 +10,6 @@ export const getUserChannels=async(request ,response)=>{
      const channels=await Channel.find({
         $or:[{admin:admin},{members:admin}]
      }).sort({updatedAt:-1})
-     //console.log('printing the channels',channels);
      response.status(StatusCodes.OK).json({channels});
     } catch (error) {
         response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message:"Internal server error"});

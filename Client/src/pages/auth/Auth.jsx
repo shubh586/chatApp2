@@ -11,6 +11,7 @@ import { SIGNIN_ROUTE } from "@/utils/constant.js";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store";
 
+
 const Auth = () => {
   const { setUserInfo } = useAppStore();
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ const Auth = () => {
           password,
         });
         console.log(response);
-        toast.success("success", "User created successfully");
+        toast.success("Signup successful! Please check your email to verify your account.",);
         navigate("/auth");
       } catch (error) {
         console.log(

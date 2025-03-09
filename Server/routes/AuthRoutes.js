@@ -11,11 +11,13 @@ import auth, {
   addProfileImage,
   deleteProfileImage,
   logOutUser,
+  varify
 } from "../controllers/AuthController.js";
 import { varifyToken } from "../middleware/Authenticatemiddleware.js";
 const { signUp, signIn } = auth;
 router.post("/signup", signUp);
 router.post("/signin", signIn);
+router.get(`/verify/:token`,varify)
 router.get("/get-user", varifyToken, getUserInfo);
 router.patch("/update-user", varifyToken, updateProfile);
 router.patch(
