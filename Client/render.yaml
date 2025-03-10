@@ -1,9 +1,9 @@
 services:
-  - type: web
+  - type: static
     name: chat-app-client
     env: node
     buildCommand: npm install && npm run build
     staticPublishPath: "./dist"
     envVars:
       - key: VITE_SERVER_URL
-        value:"https://chat-app-backend-85ts.onrender.com"
+        value: "https://chat-app-backend-85ts.onrender.com"
