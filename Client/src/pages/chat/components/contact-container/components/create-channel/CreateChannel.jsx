@@ -19,7 +19,7 @@ import {
   // import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
   import { apiClient } from "@/lib/api-client";
   import { useAppStore } from "@/store";
-  import MultipleSelector from "@/components/ui/multipleselect";
+  import MultipleSelector from "@/components/ui/Multipleselect"
   const CreateChannel= ({doRefresh}) => {
     const { setSelectChatType, setSelectChatData,addChannel } = useAppStore();
     const [openNewContactModal, setOpenNewContactModal] = useState(false);
