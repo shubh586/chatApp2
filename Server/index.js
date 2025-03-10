@@ -7,7 +7,7 @@ import AuthRoutes from "./routes/AuthRoutes.js";
 import path from "path";
 import contackRouter from "./routes/ContactRouter.js";
 import messageRouter from "./routes/MessageRoutes.js";
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
 import setupSocket from "./socket.js";
 import ChannelRouter from "./routes/ChannelRoutes.js";
 dotenv.config();
