@@ -13,13 +13,15 @@ import ChannelRouter from "./routes/ChannelRoutes.js";
 dotenv.config();
 const app = express();
 app.use(cookieParser());
+console.log(process.env.ORIGIN);
 app.use(
   cors({
-    origin: [process.env.ORIGIN],
+    origin: "https://chat-app-client-11gq.onrender.com",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
+app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
