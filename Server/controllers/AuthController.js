@@ -68,7 +68,7 @@ const signUp = async (req, res) => {
     }
    
     const token = await jwt.sign({email,password},process.env.JWT_KEY,{expiresIn:'1h'})
-    const verificationLink = `http://localhost:4589/api/auth/verify/${token}`;
+    const verificationLink = `https://chat-app-backend-85ts.onrender.com/api/auth/verify/${token}`;
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
