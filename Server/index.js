@@ -33,10 +33,11 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/search", contackRouter);
 app.use("/api/message", messageRouter);
 app.use('/api/channel', ChannelRouter);
-app.use(express.static(path.join(__dirname, "Client", "dist")));
+app.use(express.static(path.join(__dirname, "..", "Client", "dist"))); 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "Client", "dist", "index.html"));
+  res.sendFile(path.join(__dirname, "..", "Client", "dist", "index.html"));
 });
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
