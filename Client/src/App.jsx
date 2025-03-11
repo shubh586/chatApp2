@@ -6,25 +6,27 @@ import Profile from "./pages/profile/Profile";
 import { useAppStore } from "./store";
 import { apiClient } from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constant.js";
-import { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import Verified from "./pages/auth/Verified";
 import FailedVerified from "./pages/auth/FailedVeified";
 const Authenticated = ({ children }) => {
+  const navigate = useNavigate();
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
   if (isAuthenticated) {
     if(userInfo.isVerified){
       return userInfo.profileSetup ? (
-        <Navigate to="/chat" replace />
+        navigate("/chat")
       ) : (
-        <Navigate to="/profile" replace />
+        navigate("/profile")
       );
     }
   }
   return children;
 };
 const PrivateRoute = ({ children }) => {
+  const navigate = useNavigate();
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
 
@@ -33,7 +35,7 @@ const PrivateRoute = ({ children }) => {
       return children
     }
   }
-  return <Navigate to="/auth" replace />;
+  return navigate("/auth");
 };
 
 const App = () => {
@@ -96,7 +98,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/auth" />} />
+        <Route path="*" element={<Auth/>} />
       </Routes>
     </BrowserRouter>
   );
