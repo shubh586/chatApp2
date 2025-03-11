@@ -79,7 +79,7 @@ const MessageBar = () => {
         });
         setIsUploading(false);
         if (selectChatType === "contact") {
-          socket.emit("send-channel-message", {
+          socket.emit("sendmessage", {
             sender: userInfo.id,
             content: undefined,
             recipient: selectChatData._id,
