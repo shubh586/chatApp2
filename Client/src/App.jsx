@@ -35,7 +35,7 @@ const PrivateRoute = ({ children }) => {
       return children
     }
   }
-  return navigate("/auth");
+  navigate("/auth");
 };
 
 const App = () => {
