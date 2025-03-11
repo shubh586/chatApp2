@@ -80,7 +80,7 @@ const Profile = () => {
 
     if (file) {
       const formData = new FormData();
-      formData.append("profile-image", file);
+      formData.append("image", file);
       try {
         const response = await apiClient.patch(
           ADD_PROFILE_IMAGE_ROUTE,
@@ -148,13 +148,13 @@ const Profile = () => {
                 )}
               </div>
             )}
-            <form action="post" encType="multipart/form-data">
+            <form method="POST" encType="multipart/form-data">
               <input
                 type="file"
                 ref={fileInputRef}
                 className="hidden"
                 onChange={handleChangeImage}
-                name="profile-image"
+                name="image"
                 accept=".png,.jpeg,.svg,.webp"
               />
             </form>

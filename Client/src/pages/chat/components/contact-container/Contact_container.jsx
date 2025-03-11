@@ -16,7 +16,7 @@ const [refresh,setRefresh]=useState(false);
 useEffect(() => { 
 
   const getContcts=async()=>{
-    console.log("fetching contacts");
+    //console.log("fetching contacts");
     try {
       const response = await apiClient.post(GET_CONTACTS, { withCredentials: true });
       if(response.data.contacts){
@@ -27,7 +27,7 @@ useEffect(() => {
     }
   };
   const getChannels=async()=>{
-    console.log("fetching channels");
+    //console.log("fetching channels");
     try {
       const response = await apiClient.get(GET_USER_CHANNELS, { withCredentials: true });
       if(response.data.channels){

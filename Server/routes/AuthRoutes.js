@@ -1,7 +1,7 @@
 import express from "express";
-
+import path from "path";
 import multer from "multer";
-const uploads = multer({ dest: "uploads" });
+const uploads = multer({ dest: path.join("uploads") });
 
 const router = express.Router();
 

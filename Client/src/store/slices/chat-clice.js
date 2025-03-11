@@ -52,7 +52,7 @@ export const createChatSlice = (set, get) => ({
               : message.sender._id?message.sender._id:message.sender,
         },
       ];
-      console.log(newState);
+      // console.log(newState);
       return { selectChatMessages: newState };
     });
   },

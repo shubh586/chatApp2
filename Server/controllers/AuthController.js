@@ -221,20 +221,23 @@ export const addProfileImage = async (req, res) => {
     }
     const file = req.file;
     const uploaddir = path.join("uploads");
+    if(!fs.existsSync(uploaddir)){
+      fs,mkdirSync(uploaddir,{recursive:true});
+    }
     const fileName = Date.now() + file.originalname;
     const unique = path.join(uploaddir, fileName);
-    const filePathForDB = unique.replace(/\\+/g, "/");
-    renameSync(file.path, filePathForDB);
+
+    renameSync(file.path, unique);
     const userId = req.userId;
     const user = await User.findByIdAndUpdate(
       userId,
-      { image: filePathForDB },
+      { image: path.posix.join("uploads", fileName) },
       { new: true, runValidators: true }
     );
     res.status(StatusCodes.OK).json({ image: user.image });
   } catch (error) {
     console.log("pakda gaya in addProfileImage", error);
-    res.status(500).json({ error, message: "Error in image uploading" });
+    res.status(500).json({message: "Error in image uploading" });
   }
 };
 

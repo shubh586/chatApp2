@@ -35,14 +35,15 @@ export const searchContacts = async (request, response, next) => {
 
 export const getContacts = async (request, response, next) => {
   const user1 = request.userId;
-
+  const user1ObjectId2 = new mongoose.Types.ObjectId(user1);
+  // const user1ObjectId = mongoose.Types.ObjectId.createFromHexString(user1);
   try {
     const contacts = await Message.aggregate([
       {
         $match: {
           $or: [
-            { sender: new mongoose.Schema.Types.ObjectId(user1) },
-            { recipient: new mongoose.Schema.Types.ObjectId(user1) },
+            { sender: user1ObjectId2 },
+            { recipient: user1ObjectId2 },
           ],
         },
       },
@@ -53,7 +54,7 @@ export const getContacts = async (request, response, next) => {
         $group: {
           _id: {
             $cond: {
-              if: { $eq: ["$sender", new mongoose.Schema.Types.ObjectId(user1)] },
+              if: { $eq: ["$sender", user1ObjectId2] },
               then: "$recipient",
               else: "$sender",
             },

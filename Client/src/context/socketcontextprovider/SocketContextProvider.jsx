@@ -25,7 +25,7 @@ const SocketContextProvider = ({ children }) => {
             selectChatData._id === message.recipient._id)
         ) {
           {
-            console.log("message received", message);
+            // console.log("message received", message);
             addMessage(message);
           }
         }
@@ -39,7 +39,7 @@ const SocketContextProvider = ({ children }) => {
           selectChatType !== undefined &&
           selectChatData._id === message.channelId
         ) {
-          console.log("channel message received", message);
+          //console.log("channel message received", message);
           addMessage(message);
         }
         addChannelInChannelList(message);
@@ -52,7 +52,7 @@ const SocketContextProvider = ({ children }) => {
         handleReceivedChannelMessage
       );
       socket.current.on("connect", () => {
-        console.log("Clinet is connected");
+        //console.log("Clinet is connected");
       });
       
       return () => {
