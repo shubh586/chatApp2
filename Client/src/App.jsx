@@ -17,9 +17,9 @@ const Authenticated = ({ children }) => {
   if (isAuthenticated) {
     if(userInfo.isVerified){
       return userInfo.profileSetup ? (
-        navigate("/chat")
+        <Navigate to="/chat" />
       ) : (
-        navigate("/profile")
+        <Navigate to="/profile" />
       );
     }
   }
@@ -35,7 +35,7 @@ const PrivateRoute = ({ children }) => {
       return children
     }
   }
-  navigate("/auth");
+ return  <Navigate to="/auth" />
 };
 
 const App = () => {
