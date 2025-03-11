@@ -54,14 +54,11 @@ const Auth = () => {
           { withCredentials: true }
         );
 
-        console.log("in the login", response.data.user);
         toast.success("User logged in successfully");
         setUserInfo(response.data.user);
         if (response.data.user.profileSetup) {
-          console.log("runnig chat in login");
           navigate("/chat");
         } else {
-          console.log("runnig profile  in login");
           navigate("/profile");
         }
       } catch (error) {
@@ -83,7 +80,6 @@ const Auth = () => {
           email,
           password,
         });
-        console.log(response);
         toast.success("Signup successful! Please check your email to verify your account.",);
         navigate("/auth");
       } catch (error) {

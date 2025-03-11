@@ -46,8 +46,6 @@ const App = () => {
         const response = await apiClient.get(GET_USER_INFO, {
           withCredentials: true,
         });
-        console.log("printing the respose data ", response.data.user);
-
         setUserInfo(response.data.user);
       } catch (error) {
         console.error("Error fetching user info:", error);
@@ -64,6 +62,7 @@ const App = () => {
   }, []);
 
   if (loading) {
+    
     return <div>Loading...</div>;
   }
 

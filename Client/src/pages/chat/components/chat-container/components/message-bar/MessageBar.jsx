@@ -29,7 +29,7 @@ const MessageBar = () => {
         messageType: "text",
         fileUrl: undefined,
       });
-      console.log("printing the chatdata: ", selectChatData);
+    
     } else if (selectChatType === "channel") {
       socket.emit("send-channel-message", {
         sender: userInfo.id,

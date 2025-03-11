@@ -24,6 +24,7 @@ const MessageComponents = () => {
   } = useAppStore();
   const downLoadFile = async (url) => {
     try {
+      console.log()
       if (typeof document === "undefined") {
         console.error("Document is not available");
         return;
@@ -56,6 +57,7 @@ const MessageComponents = () => {
   };
 
   useEffect(() => {
+    
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
@@ -64,14 +66,14 @@ const MessageComponents = () => {
   useEffect(() => {
     if (!selectChatData?._id) return;
     const getMessages = async () => {
-      console.log("in the getmessages");
+     
       try {
         const response = await apiClient.post(
           GET_MESSAGES,
           { id: selectChatData._id },
           { withCredentials: true }
         );
-        console.log(response.data.messages, "response in getting messages");
+      
         setSelectChatMessages(response.data.messages);
       } catch (error) {
         console.error("Error fetching messages:", error);

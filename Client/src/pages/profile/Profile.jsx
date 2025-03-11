@@ -46,7 +46,7 @@ const Profile = () => {
         color: selectColor || userInfo.color,
       });
       const user = response.data.user;
-      console.log("updated data", response.data.user);
+   
       setUserInfo(user);
       toast.success("Profile updates sucessfully");
       navigate("/chat");
@@ -87,7 +87,7 @@ const Profile = () => {
           formData,
           { withCredentials: true }
         );
-        console.log(response.data);
+       
         setUserInfo({ ...userInfo, image: response.data.image });
         setImage(response.data.image);
       } catch (error) {

@@ -13,10 +13,9 @@ import ChannelRouter from "./routes/ChannelRoutes.js";
 dotenv.config();
 const app = express();
 app.use(cookieParser());
-console.log(process.env.ORIGIN);
 app.use(
   cors({
-    origin: "https://chat-app-client-11gq.onrender.com",
+    origin: process.env.ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })

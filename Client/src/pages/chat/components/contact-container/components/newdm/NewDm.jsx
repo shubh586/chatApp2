@@ -28,6 +28,7 @@ const NewDm = ({doRefresh}) => {
 
   const searchContacts = async (searchTerm) => {
     try {
+
       const response = await apiClient.get(SEARCH_CONTACTS, {
         params: { searchTerm },
         withCredentials: true,

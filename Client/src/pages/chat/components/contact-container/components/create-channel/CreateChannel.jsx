@@ -28,6 +28,7 @@ import {
     const [selectedContacts, setSelectedContacts] = useState([]);
     const [channelName, setChannelName] = useState("");
     useEffect(() => {
+     
       const getAllContacts = async () => {
         try {
           const response = await apiClient.get(GET_ALL_CONTACTS, {
@@ -48,7 +49,6 @@ import {
          const response=await apiClient.post(CREATE_CHANNELS,{
           name:channelName,
           members:selectedContacts.map((contact)=>(contact.value))},{withCredentials:true});
-          console.log(response.data.channel);
           setSelectedContacts([]);
           setChannelName("");
           setOpenNewContactModal(false);

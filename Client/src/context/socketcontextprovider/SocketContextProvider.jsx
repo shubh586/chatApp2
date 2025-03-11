@@ -12,6 +12,7 @@ const SocketContextProvider = ({ children }) => {
     if (userInfo) {
       socket.current = io(HOST, {
         withCredentials: true,
+        transports: ["websocket", "polling"],
         query: { userId: userInfo.id },
       });
 
